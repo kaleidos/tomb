@@ -35,8 +35,8 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    List<String> list(String path) {
-        return s3Client.listObjects(this.bucket).objectSummaries.collect { it.key }
+    List<String> list(String path = null) {
+        return s3Client.listObjects(this.bucket, path).objectSummaries.collect { it.key }
     }
 
     void copy(String initialPath, String destinationPath) {
