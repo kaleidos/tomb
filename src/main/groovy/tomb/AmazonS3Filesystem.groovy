@@ -28,7 +28,7 @@ class AmazonS3Filesystem implements FilesystemProvider {
 
         try {
             s3Client.putObject(this.bucket, path, tempFile)
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new FilesystemException("Unable to upload to path ${path}")
         } finally {
             tempFile.delete()
@@ -39,12 +39,37 @@ class AmazonS3Filesystem implements FilesystemProvider {
         return s3Client.listObjects(this.bucket).objectSummaries.collect { it.key }
     }
 
-    void copy(String initialPath, String destinationPath) {}
+    void copy(String initialPath, String destinationPath) {
+        try {
+            s3Client.copyObject(this.bucket, initialPath, this.bucket, destinationPath)
+        } catch (Exception e) {
+            throw new FilesystemException("Unable to copy path ${initialPath} to ${destinationPath}")
+        }
+    }
 
-    void move(String initialPath, String destinationPath) {}
+    void move(String initialPath, String destinationPath) {
+        try {
+            s3Client.copyObject(this.bucket, initialPath, this.bucket, destinationPath)
+            this.delete(initialPath)
+        } catch (Exception e) {
+            throw new FilesystemException("Unable to move path ${initialPath} to ${destinationPath}")
+        }
+    }
 
-    void delete(String path) {}
+    void delete(String path) {
+        try {
+            s3Client.deleteObject(this.bucket, path)
+        } catch (Exception e) {
+            throw new FilesystemException("Unable to delete path ${path}")
+        }
+    }
 
-    URL getUrl(String path) {}
+    URL getUrl(String path) {
+        try {
+            return s3Client.getUrl(this.bucket, path)
+        } catch (Exception e) {
+            throw new FilesystemException("Unable to get url of path ${path}")
+        }
+    }
 
 }
