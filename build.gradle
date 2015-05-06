@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
+        classpath 'com.bluepapa32:gradle-watch-plugin:0.1.5'
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'com.bluepapa32.watch'
+
+asciidoctor {
+    sourceDir 'docs'
+    outputDir "${buildDir}/docs"
+    attributes 'source-highlighter': 'coderay',
+               'toc-title'         : 'Table of Contents',
+               toc                 : 'left',
+               icons               : 'font'
+}
+
+watch {
+    asciidoctor {
+        files fileTree(dir: 'docs', include: '**/*.adoc')
+        tasks 'asciidoctor'
+    }
+}
+
+apply plugin: 'groovy'
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+group = 'tomb'
+version = '0.0.1'
+
+apply plugin: 'maven-publish'
+apply from: 'projectVariables.gradle'
+
+publishing {
+    repositories {
+        maven {
+            url repositoryUrl
+            credentials {
+                username repositoryUsername
+                password repositoryPassword
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.3'
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
