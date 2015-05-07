@@ -14,7 +14,7 @@ class AmazonS3Filesystem implements FilesystemProvider {
         this.s3Client = new AmazonS3Client([key, secret] as BasicAWSCredentials)
     }
 
-    File getTemporalFile() {
+    private File getTemporalFile() {
         return File.createTempFile(this.bucket, '_tmp')
     }
 
