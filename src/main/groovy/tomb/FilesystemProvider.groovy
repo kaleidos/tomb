@@ -1,19 +1,21 @@
 package tomb
 
+import java.nio.file.Path
+
 interface FilesystemProvider {
 
-    InputStream get(String path)
+    InputStream get(Path path)
 
-    void put(InputStream inputStream, String path)
+    void put(InputStream inputStream, Path path)
 
-    List<String> list(String path)
+    List<String> list(Path path)
 
-    void copy(String initialPath, String destinationPath)
+    void copy(Path initialPath, Path destinationPath)
 
-    void move(String initialPath, String destinationPath)
+    void move(Path initialPath, Path destinationPath)
 
-    void delete(String path)
+    void delete(Path path)
 
-    URI getUri(String path)
+    URI getUri(Path path)
 
 }

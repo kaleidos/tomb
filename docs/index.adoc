@@ -17,39 +17,39 @@ Right now, Tomb implements two backends, `LocalFilesystem` and `AmazonS3Filesyst
 
 |get
 |https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream]
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
 |Returns an https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] with the contents of the file
 
 |put
 |void
 |https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] inputStream
-https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
 |Creates a file in the backend with the contents of the `inputStream` parameter
 
 |list
 |https://docs.oracle.com/javase/8/docs/api/java/util/List.html[List]<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]>
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
 |Lists the contents of the backend's path
 
 |copy
 |void
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] initialPath
-https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] destinationPath
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialPath
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationPath
 |Copies the `initialPath` file to the `destinationPath` route
 
 |move
 |void
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] initialPath
-https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] destinationPath
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialPath
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationPath
 |Moves the `initialPath` file to the `destinationPath` route
 
 |delete
 |void
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
 |Deletes the file on the `path` route
 
 |getUri
 |https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI]
-|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
 |Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI] of the resource located on `path`
 |====

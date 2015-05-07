@@ -1,9 +1,31 @@
 package tomb
 
+import java.nio.file.Path
+
 class LocalFilesystem implements FilesystemProvider {
 
-    InputStream get(String path) {
-        File file = new File(path)
+    Path basePath
+
+    LocalFilesystem(Path basePath) {
+        File basePathFile = basePath.toFile()
+        if (!basePathFile.exists()) {
+            throw new FilesystemException("Path ${basePath} doesn't exist")
+        }
+
+        if (!basePathFile.isDirectory()) {
+            throw new FilesystemException("Path ${basePath} is not a directory")
+        }
+
+        this.basePath = basePath
+    }
+
+    Path resolve(Path path) {
+        return basePath.resolve(path)
+    }
+
+    InputStream get(Path relativePath) {
+        Path path = resolve(relativePath)
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("File ${path} doesn't exist")
@@ -16,17 +38,18 @@ class LocalFilesystem implements FilesystemProvider {
         return file.newInputStream()
     }
 
-    void put(InputStream inputStream, String path) {
+    void put(InputStream inputStream, Path path) {
+        File file = path.toFile()
+
         try {
-            File file = new File(path)
-            file.append(inputStream)
-        } catch(Exception e) {
+            file.withOutputStream { it.write(inputStream.bytes) }
+        } catch (Exception e) {
             throw new FilesystemException("Unable to write file ${path}")
         }
     }
 
-    List<String> list(String path) {
-        File file = new File(path)
+    List<String> list(Path path = Paths.get('')) {
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("Directory ${path} doesn't exist")
@@ -39,8 +62,8 @@ class LocalFilesystem implements FilesystemProvider {
         return f.list()
     }
 
-    void copy(String initialPath, String destinationPath) {
-        File initialFile = new File(initialPath)
+    void copy(Path initialPath, Path destinationPath) {
+        File initialFile = initialPath.toFile()
 
         if (!initialFile.exists()) {
             throw new FilesystemException("File ${initialPath} doesn't exist")
@@ -50,18 +73,17 @@ class LocalFilesystem implements FilesystemProvider {
             throw new FilesystemException("Path ${initialPath} is not a file")
         }
 
-        File destinationFile = new File(destinationPath)
+        File destinationFile = destinationPath.toFile()
 
         if (destinationFile.exists()) {
             throw new FilesystemException("File ${destinationPath} already exist")
         }
 
-        FileInputStream inputStream = initialFile.newInputStream()
-        destinationFile.append(inputStream)
+        destinationFile.withOutputStream { it.write(initialFile.bytes) }
     }
 
-    void move(String initialPath, String destinationPath) {
-        File initialFile = new File(initialPath)
+    void move(Path initialPath, Path destinationPath) {
+        File initialFile = initialPath.toFile()
 
         if (!initialFile.exists()) {
             throw new FilesystemException("File ${initialPath} doesn't exist")
@@ -71,19 +93,18 @@ class LocalFilesystem implements FilesystemProvider {
             throw new FilesystemException("Path ${initialPath} is not a file")
         }
 
-        File destinationFile = new File(destinationPath)
+        File destinationFile = destinationPath.toFile()
 
         if (destinationFile.exists()) {
             throw new FilesystemException("File ${destinationPath} already exist")
         }
 
-        FileInputStream inputStream = initialFile.newInputStream()
-        destinationFile.append(inputStream)
+        destinationFile.withOutputStream { it.write(initialFile.bytes) }
         initialFile.delete()
     }
 
-    void delete(String path) {
-        File file = new File(path)
+    void delete(Path path) {
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("File ${path} doesn't exist")
@@ -96,8 +117,8 @@ class LocalFilesystem implements FilesystemProvider {
         file.delete()
     }
 
-    URI getUri(String path) {
-        File file = new File(path)
+    URI getUri(Path path) {
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("File ${path} doesn't exist")
