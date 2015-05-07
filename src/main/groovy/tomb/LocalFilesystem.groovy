@@ -2,6 +2,21 @@ package tomb
 
 class LocalFilesystem implements FilesystemProvider {
 
+    String basePath
+
+    LocalFileSystem(String basePath) {
+        File basePathFile = new File(basePath)
+        if (!basePathFile.exists()) {
+            throw new FilesystemException("Path ${basePath} doesn't exist")
+        }
+
+        if (!basePathFile.isDirectory()) {
+            throw new FilesystemException("Path ${basePath} is not a directory")
+        }
+
+        this.basePath = basePath
+    }
+
     InputStream get(String path) {
         File file = new File(path)
 
