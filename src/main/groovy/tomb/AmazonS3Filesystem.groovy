@@ -64,9 +64,9 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    URL getUrl(String path) {
+    URI getUri(String path) {
         try {
-            return s3Client.getUrl(this.bucket, path)
+            return s3Client.getUrl(this.bucket, path).toURI()
         } catch (Exception e) {
             throw new FilesystemException("Unable to get url of path ${path}")
         }

@@ -14,6 +14,6 @@ interface FilesystemProvider {
 
     void delete(String path)
 
-    URL getUrl(String path)
+    URI getUri(String path)
 
 }

@@ -48,8 +48,8 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] destinat
 |https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
 |Deletes the file on the `path` route
 
-|getUrl
-|https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[URL]
+|getUri
+|https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI]
 |https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
-|Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[URL] of the resource located on `path`
+|Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI] of the resource located on `path`
 |====

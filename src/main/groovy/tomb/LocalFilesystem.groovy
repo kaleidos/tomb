@@ -96,14 +96,14 @@ class LocalFilesystem implements FilesystemProvider {
         file.delete()
     }
 
-    URL getUrl(String path) {
+    URI getUri(String path) {
         File file = new File(path)
 
         if (!file.exists()) {
             throw new FilesystemException("File ${path} doesn't exist")
         }
 
-        return file.toURL()
+        return file.toURI()
     }
 
 }
