@@ -1,0 +1,55 @@
+= Tomb
+:groovy-source: ../src/main/groovy
+:test-source: ../src/test/groovy
+
+== Introduction
+
+Tomb is a `groovy` library to use various filesystems in a quick an easy way. Tomb provides you with a generic abstraction to manipulate files in a filesystem and several backends to use it against.
+
+Right now, Tomb implements two backends, `LocalFilesystem` and `AmazonS3Filesystem`.
+
+== FilesystemProvider
+
+`FilesystemProvider` is the interface that all the backends implement. It has the following methods:
+
+|====
+|Name |Returns |Parameters |Description
+
+|get
+|https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream]
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|Returns an https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] with the contents of the file
+
+|put
+|void
+|https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] inputStream
+https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|Creates a file in the backend with the contents of the `inputStream` parameter
+
+|list
+|https://docs.oracle.com/javase/8/docs/api/java/util/List.html[List]<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]>
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|Lists the contents of the backend's path
+
+|copy
+|void
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] initialPath
+https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] destinationPath
+|Copies the `initialPath` file to the `destinationPath` route
+
+|move
+|void
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] initialPath
+https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] destinationPath
+|Moves the `initialPath` file to the `destinationPath` route
+
+|delete
+|void
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|Deletes the file on the `path` route
+
+|getUrl
+|https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[URL]
+|https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String] path
+|Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URL.html[URL] of the resource located on `path`
+|====
