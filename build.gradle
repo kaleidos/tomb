@@ -26,6 +26,11 @@ watch {
         files fileTree(dir: 'docs', include: '**/*.adoc')
         tasks 'asciidoctor'
     }
+
+    tests {
+        files fileTree(dir: 'src', include: '**/*.groovy')
+        tasks 'test'
+    }
 }
 
 apply plugin: 'groovy'
