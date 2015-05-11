@@ -190,4 +190,49 @@ class LocalFilesystemMethodsSpec extends Specification {
             [tmpFile, destinationPath.toFile()]*.delete()
     }
 
+    void "Copying a remote filesystem's file that doesn't exist"() {
+        given: "A file path that doesn't exist"
+            def path = Paths.get('nonexistent')
+            assert !new File("${tmpPath}/${path}").exists()
+
+        when: 'copying the temporal file'
+            fs.copy(path, Paths.get('randomPath'))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+    }
+
+    void "Copying a remote filesystem's directory"() {
+        given: 'A temporal directory'
+            def tmpDir = File.createTempDir('tomb_', '_tmp')
+
+        when: 'copying the temporal file'
+            fs.copy(Paths.get(tmpDir.name), Paths.get('randomPath'))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+
+        cleanup: 'delete the generated resources'
+            tmpDir.delete()
+    }
+
+    void "Copying a remote filesystem's file to a destination that already exists"() {
+        given: 'A temporal origin file'
+            def tmpOriginFile = File.createTempFile('tomb_', '_tmp')
+            tmpOriginFile.text = 'holamundo'
+
+        and: 'A temporal destination file'
+            def tmpDestinationFile = File.createTempFile('tomb_', '_tmp')
+            tmpDestinationFile.text = 'holamundo'
+
+        when: 'copying the temporal file'
+            fs.copy(Paths.get(tmpOriginFile.name), Paths.get(tmpDestinationFile.name))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+
+        cleanup: 'delete the generated resources'
+            [tmpOriginFile, tmpDestinationFile]*.delete()
+    }
+
 }
