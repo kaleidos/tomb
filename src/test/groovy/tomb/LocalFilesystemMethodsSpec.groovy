@@ -9,6 +9,10 @@ class LocalFilesystemMethodsSpec extends Specification {
     Path tmpPath = Paths.get(System.getProperty('java.io.tmpdir'))
     LocalFilesystem fs = new LocalFilesystem(tmpPath)
 
+    String getRandomUUID() {
+        return UUID.randomUUID().toString().replaceAll('-', '')
+    }
+
     void 'Resolving a relative path'() {
         given: 'A relative path'
             def relativePath = Paths.get('images/relative/logo.png')
@@ -40,7 +44,7 @@ class LocalFilesystemMethodsSpec extends Specification {
 
     void "Check that a file doesn't exist"() {
         given: 'A relative path'
-            def relativePath = Paths.get('/asdasd')
+            def relativePath = Paths.get("/${randomUUID}")
 
         and: "being sure that it doesn't exists"
             assert !relativePath.toFile().exists()
@@ -54,7 +58,7 @@ class LocalFilesystemMethodsSpec extends Specification {
 
     void 'Obtaining a file'() {
         given: 'A filename'
-            def filename = 'temp.txt'
+            def filename = randomUUID
 
         and: 'a file in the filesystem'
             def filePath = Paths.get("${fs.basePath}/${filename}")
@@ -112,7 +116,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             f.text = 'holamundo'
 
         and: 'a remote path'
-            def relativePath = Paths.get('myfile')
+            def relativePath = Paths.get(randomUUID)
 
         when: 'uploading it to the filesystem'
             fs.put(f.newInputStream(), relativePath)
@@ -156,7 +160,7 @@ class LocalFilesystemMethodsSpec extends Specification {
 
     void "Listing a remote filesystem's directory that doesn't exist"() {
         given: 'A temporal directory path'
-            def tmpDirPath = Paths.get('asdasd')
+            def tmpDirPath = Paths.get(randomUUID)
 
         and: "that doesn't exist"
             assert !new File("${tmpPath}/${tmpDirPath}").exists()
@@ -174,7 +178,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpFile.text = 'holamundo'
 
         and: 'a nonexistent destination path'
-            def destinationPath = Paths.get('destinationPath')
+            def destinationPath = Paths.get(randomUUID)
             assert !destinationPath.toFile().exists()
 
         and: "that doesn't exist before"
@@ -183,7 +187,7 @@ class LocalFilesystemMethodsSpec extends Specification {
         when: 'copying the temporal file'
             fs.copy(Paths.get(tmpFile.name), destinationPath)
 
-        then: 'the destination path should now exists'
+        then: 'the destination path should now exist'
             new File("${tmpPath}/${destinationPath}").text == 'holamundo'
 
         cleanup: 'delete the generated resources'
@@ -192,11 +196,11 @@ class LocalFilesystemMethodsSpec extends Specification {
 
     void "Copying a remote filesystem's file that doesn't exist"() {
         given: "A file path that doesn't exist"
-            def path = Paths.get('nonexistent')
+            def path = Paths.get(randomUUID)
             assert !new File("${tmpPath}/${path}").exists()
 
         when: 'copying the temporal file'
-            fs.copy(path, Paths.get('randomPath'))
+            fs.copy(path, Paths.get(randomUUID))
 
         then: 'an exception should be thrown'
             thrown FilesystemException
@@ -207,7 +211,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             def tmpDir = File.createTempDir('tomb_', '_tmp')
 
         when: 'copying the temporal file'
-            fs.copy(Paths.get(tmpDir.name), Paths.get('randomPath'))
+            fs.copy(Paths.get(tmpDir.name), Paths.get(randomUUID))
 
         then: 'an exception should be thrown'
             thrown FilesystemException
@@ -227,6 +231,75 @@ class LocalFilesystemMethodsSpec extends Specification {
 
         when: 'copying the temporal file'
             fs.copy(Paths.get(tmpOriginFile.name), Paths.get(tmpDestinationFile.name))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+
+        cleanup: 'delete the generated resources'
+            [tmpOriginFile, tmpDestinationFile]*.delete()
+    }
+
+    void "Moving a remote filesystem's file"() {
+        given: 'A temporal file'
+            def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+
+        and: 'a nonexistent destination path'
+            def destinationPath = Paths.get(randomUUID)
+
+        and: "that doesn't exist before"
+            assert !destinationPath.toFile().exists()
+
+        when: 'moving the temporal file'
+            fs.move(Paths.get(tmpFile.name), destinationPath)
+
+        then: 'the destination path should now exist'
+            new File("${tmpPath}/${destinationPath}").text == 'holamundo'
+
+        and: 'the original file has been deleted'
+            !tmpFile.exists()
+
+        cleanup: 'delete the generated resources'
+            destinationPath.toFile().delete()
+    }
+
+    void "Moving a remote filesystem's file that doesn't exist"() {
+        given: "A file path that doesn't exist"
+            def path = Paths.get(randomUUID)
+            assert !new File("${tmpPath}/${path}").exists()
+
+        when: 'moving the temporal file'
+            fs.move(path, Paths.get(randomUUID))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+    }
+
+    void "Moving a remote filesystem's directory"() {
+        given: 'A temporal directory'
+            def tmpDir = File.createTempDir('tomb_', '_tmp')
+
+        when: 'moving the temporal file'
+            fs.move(Paths.get(tmpDir.name), Paths.get(randomUUID))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+
+        cleanup: 'delete the generated resources'
+            tmpDir.delete()
+    }
+
+    void "Moving a remote filesystem's file to a destination that already exists"() {
+        given: 'A temporal origin file'
+            def tmpOriginFile = File.createTempFile('tomb_', '_tmp')
+            tmpOriginFile.text = 'holamundo'
+
+        and: 'A temporal destination file'
+            def tmpDestinationFile = File.createTempFile('tomb_', '_tmp')
+            tmpDestinationFile.text = 'holamundo'
+
+        when: 'moving the temporal file'
+            fs.move(Paths.get(tmpOriginFile.name), Paths.get(tmpDestinationFile.name))
 
         then: 'an exception should be thrown'
             thrown FilesystemException
