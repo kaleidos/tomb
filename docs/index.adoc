@@ -15,41 +15,51 @@ Right now, Tomb implements two backends, `LocalFilesystem` and `AmazonS3Filesyst
 |====
 |Name |Returns |Parameters |Description
 
+|resolve
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path]
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
+|Resolves a relative path against the filesystem base path
+
+|exists
+|https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html[Boolean]
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
+|Returns a https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html[Boolean] value depending on the existence of the file in the filesystem
+
 |get
 |https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream]
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
 |Returns an https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] with the contents of the file
 
 |put
 |void
 |https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] inputStream
-http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
 |Creates a file in the backend with the contents of the `inputStream` parameter
 
 |list
 |https://docs.oracle.com/javase/8/docs/api/java/util/List.html[List]<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]>
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
 |Lists the contents of the backend's path
 
 |copy
 |void
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialPath
-http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationPath
-|Copies the `initialPath` file to the `destinationPath` route
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialRelativePath
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationRelativePath
+|Copies the `initialRelativePath` file to the `destinationRelativePath` route
 
 |move
 |void
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialPath
-http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationPath
-|Moves the `initialPath` file to the `destinationPath` route
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] initialRelativePath
+http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] destinationRelativePath
+|Moves the `initialRelativePath` file to the `destinationRelativePath` route
 
 |delete
 |void
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
-|Deletes the file on the `path` route
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
+|Deletes the file on the `relativePath` route
 
 |getUri
 |https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI]
-|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] path
-|Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI] of the resource located on `path`
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
+|Obtains the https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI] of the resource located on `relativePath`
 |====

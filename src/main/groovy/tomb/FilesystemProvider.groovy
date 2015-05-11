@@ -4,18 +4,22 @@ import java.nio.file.Path
 
 interface FilesystemProvider {
 
-    InputStream get(Path path)
+    Path resolve(Path relativePath)
 
-    void put(InputStream inputStream, Path path)
+    Boolean exists(Path relativePath)
 
-    List<String> list(Path path)
+    InputStream get(Path relativePath)
 
-    void copy(Path initialPath, Path destinationPath)
+    void put(InputStream inputStream, Path relativePath)
 
-    void move(Path initialPath, Path destinationPath)
+    List<String> list(Path relativePath)
 
-    void delete(Path path)
+    void copy(Path initialRelativePath, Path destinationRelativePath)
 
-    URI getUri(Path path)
+    void move(Path initialRelativePath, Path destinationRelativePath)
+
+    void delete(Path relativePath)
+
+    URI getUri(Path relativePath)
 
 }
