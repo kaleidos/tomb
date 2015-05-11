@@ -1,9 +1,11 @@
 package tomb
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.AmazonS3Exception
 import com.amazonaws.auth.BasicAWSCredentials
 
 class AmazonS3Filesystem implements FilesystemProvider {
@@ -15,15 +17,36 @@ class AmazonS3Filesystem implements FilesystemProvider {
     AmazonS3Filesystem(String key, String secret, String bucket, Path basePath) {
         this.bucket = bucket
         this.s3Client = new AmazonS3Client([key, secret] as BasicAWSCredentials)
-        this.basePath = basePath
+        this.basePath = (basePath == basePath.root) ? Paths.get('') : basePath
     }
 
     private File getTemporalFile() {
         return File.createTempFile(this.bucket, '_tmp')
     }
 
-    InputStream get(Path path) {
-        return s3Client.getObject(this.bucket, path.toString()).objectContent
+    Path resolve(Path path) {
+        return basePath.resolve(path)
+    }
+
+    Boolean exists(Path relativePath) {
+        Path path = resolve(relativePath)
+
+        try {
+            s3Client.getObjectMetadata(this.bucket, path.toString())
+            return true
+        } catch(Exception e) {
+            return false
+        }
+    }
+
+    InputStream get(Path relativePath) {
+        Path path = resolve(relativePath)
+
+        try {
+            return s3Client.getObject(this.bucket, path.toString()).objectContent
+        } catch(Exception e) {
+            throw new FilesystemException("The key ${path} does not exist")
+        }
     }
 
     void put(InputStream inputStream, Path path) {
