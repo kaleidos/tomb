@@ -547,49 +547,61 @@ table.CodeRay td.code>pre{padding:0}
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolve</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Resolves a relative path against the filesystem base path</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">exists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a> value depending on the existence of the file in the filesystem</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">get</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html">InputStream</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Returns an <a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html">InputStream</a> with the contents of the file</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">put</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">void</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html">InputStream</a> inputStream
-<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> path</p></td>
+<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Creates a file in the backend with the contents of the <code>inputStream</code> parameter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a>&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Lists the contents of the backend&#8217;s path</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">copy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">void</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> initialPath
-<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> destinationPath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Copies the <code>initialPath</code> file to the <code>destinationPath</code> route</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> initialRelativePath
+<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> destinationRelativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Copies the <code>initialRelativePath</code> file to the <code>destinationRelativePath</code> route</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">move</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">void</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> initialPath
-<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> destinationPath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Moves the <code>initialPath</code> file to the <code>destinationPath</code> route</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> initialRelativePath
+<a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> destinationRelativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moves the <code>initialRelativePath</code> file to the <code>destinationRelativePath</code> route</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">delete</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">void</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes the file on the <code>path</code> route</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes the file on the <code>relativePath</code> route</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">getUri</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Obtains the <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a> of the resource located on <code>path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a> relativePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtains the <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a> of the resource located on <code>relativePath</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -598,7 +610,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-07 13:13:42 CEST
+Last updated 2015-05-11 13:45:32 CEST
 </div>
 </div>
 </body>
