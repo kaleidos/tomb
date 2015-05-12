@@ -308,4 +308,87 @@ class LocalFilesystemMethodsSpec extends Specification {
             [tmpOriginFile, tmpDestinationFile]*.delete()
     }
 
+    void "Deleting a file"() {
+        given: 'A file'
+            def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+            assert tmpFile.exists()
+
+        when: 'deleting the file'
+            fs.delete(tmpFile.toPath())
+
+        then: 'the file should be deleted'
+            !tmpFile.exists()
+    }
+
+    void "Deleting a nonexistent"() {
+        given: 'A path to a file'
+            def tmpFilePath = Paths.get(randomUUID)
+
+        and: "that doesn't exists"
+            assert !tmpFilePath.toFile().exists()
+
+        when: 'trying to delete it'
+            fs.delete(tmpFilePath)
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+    }
+
+    void "Deleting a directory"() {
+        given: 'A directory'
+            def tmpDir = File.createTempDir('tomb_', '_tmp')
+
+        and: 'that exists'
+            assert tmpDir.exists()
+
+        when: 'trying to delete it'
+            fs.delete(Paths.get(tmpDir.name))
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+
+        cleanup: 'delete the generated resources'
+            tmpDir.delete()
+    }
+
+    void "Obtaining the URI of a file"() {
+        given: 'A file'
+            def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+            assert tmpFile.exists()
+
+        when: 'obtaining its URI'
+            def result = fs.getUri(Paths.get(tmpFile.name))
+
+        then: 'the URI should be formatted as expected'
+            result.toString() == "file:${tmpFile}"
+    }
+
+    void "Obtaining the URI of a nonexistent file"() {
+        given: 'A path to a file'
+            def tmpFilePath = Paths.get(randomUUID)
+
+        and: "that doesn't exists"
+            assert !tmpFilePath.toFile().exists()
+
+        when: 'trying to delete it'
+            fs.getUri(tmpFilePath)
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+    }
+
+    void "Obtaining the URI of a directory"() {
+        given: 'A directory'
+            def tmpDir = File.createTempDir('tomb_', '_tmp')
+            assert tmpDir.exists()
+
+        when: 'obtaining its URI'
+            def result = fs.getUri(Paths.get(tmpDir.name))
+
+        then: 'the URI should be formatted as expected'
+            result.toString() == "file:${tmpDir}/"
+    }
+
 }
