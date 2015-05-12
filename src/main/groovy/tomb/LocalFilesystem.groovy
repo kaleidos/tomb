@@ -94,6 +94,7 @@ class LocalFilesystem implements FilesystemProvider {
     }
 
     void move(Path initialRelativePath, Path destinationRelativePath) {
+        Path initialPath = resolve(initialRelativePath)
         File initialFile = initialPath.toFile()
 
         if (!initialFile.exists()) {
@@ -104,6 +105,7 @@ class LocalFilesystem implements FilesystemProvider {
             throw new FilesystemException("Path ${initialPath} is not a file")
         }
 
+        Path destinationPath = resolve(destinationRelativePath)
         File destinationFile = destinationPath.toFile()
 
         if (destinationFile.exists()) {
@@ -129,7 +131,8 @@ class LocalFilesystem implements FilesystemProvider {
     }
 
     URI getUri(Path relativePath) {
-        File file = relativePath.toFile()
+        Path path = resolve(relativePath)
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("File ${relativePath} doesn't exist")
