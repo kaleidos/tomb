@@ -4,9 +4,29 @@
 
 == Introduction
 
-Tomb is a `groovy` library to use various filesystems in a quick an easy way. Tomb provides you with a generic abstraction to manipulate files in a filesystem and several backends to use it against.
+Tomb is a `groovy` library to use various filesystems in a quick an easy way. Tomb provides you with a generic abstraction based on the use of the `java.nio.file.Path` class to manipulate files in a filesystem and several backends to use it against.
 
 Right now, Tomb implements two backends, `LocalFilesystem` and `AmazonS3Filesystem`.
+
+== Usage
+
+Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static methods of the class `Tomb`:
+
+[source, groovy]
+----
+// Local Filesystem
+def fs = Tomb.getLocalFilesystem(Paths.get('/tmp'))
+
+fs.list()
+// => lists all files on '/tmp'
+
+// Amazon Filesystem
+def fs = Tomb.getAmazonS3Filesystem('key', 'secret', 'bucket', Paths.get('images'))
+
+def myfile = new File('/tmp/wallpaper.png')
+fs.put(myfile.newInputStream(), Paths.get('wallpaper.png'))
+// => uploads the file to 'images/wallpaper.png'
+----
 
 == FilesystemProvider
 
