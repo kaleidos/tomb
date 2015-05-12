@@ -19,8 +19,11 @@ class AmazonS3Filesystem implements FilesystemProvider {
     }
 
     AmazonS3Filesystem(String key, String secret, String bucket, Path basePath) {
-        this.bucket = bucket
         this.s3Client = this.getAmazonS3Client(key, secret)
+        if (!s3Client.doesBucketExist(bucket)) {
+            throw new FilesystemException("The bucket ${bucket} doesn't exist")
+        }
+        this.bucket = bucket
         this.basePath = (basePath == basePath.root) ? Paths.get('') : basePath
     }
 
