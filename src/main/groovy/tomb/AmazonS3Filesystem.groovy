@@ -14,9 +14,13 @@ class AmazonS3Filesystem implements FilesystemProvider {
     AmazonS3 s3Client
     Path basePath
 
+    AmazonS3Client getAmazonS3Client(String key, String secret) {
+        return new AmazonS3Client([key, secret] as BasicAWSCredentials)
+    }
+
     AmazonS3Filesystem(String key, String secret, String bucket, Path basePath) {
         this.bucket = bucket
-        this.s3Client = new AmazonS3Client([key, secret] as BasicAWSCredentials)
+        this.s3Client = this.getAmazonS3Client(key, secret)
         this.basePath = (basePath == basePath.root) ? Paths.get('') : basePath
     }
 
