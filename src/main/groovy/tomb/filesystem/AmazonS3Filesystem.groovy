@@ -55,11 +55,23 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    List<String> list(Path path = Paths.get('')) {
-        return s3Client.listObjects(this.bucket, path.toString()).objectSummaries.collect { it.key }
+    List<String> list(Path relativePath = Paths.get('')) {
+        Path path = resolve(relativePath)
+        List<String> list = s3Client.listObjects(this.bucket, path.toString()).objectSummaries.collect { it.key }
+
+        if (path.toString()) {
+            Closure relativizeFilename = { String fileName -> fileName - "${path}/" }
+
+            return list.collect(relativizeFilename)
+        } else {
+            return list
+        }
+
     }
 
-    void copy(Path initialPath, Path destinationPath) {
+    void copy(Path initialRelativePath, Path destinationRelativePath) {
+        Path initialPath = resolve(initialRelativePath)
+        Path destinationPath = resolve(destinationRelativePath)
         try {
             s3Client.copyObject(this.bucket, initialPath.toString(), this.bucket, destinationPath.toString())
         } catch (Exception e) {

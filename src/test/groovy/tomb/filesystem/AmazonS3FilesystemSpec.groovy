@@ -3,7 +3,10 @@ package tomb.filesystem
 import spock.lang.*
 import java.nio.file.Path
 import java.nio.file.Paths
+
+import tomb.exception.FilesystemException
 import tomb.test.S3Configured
+import tomb.Tomb
 
 class AmazonS3FilesystemSpec extends Specification {
 
@@ -11,7 +14,7 @@ class AmazonS3FilesystemSpec extends Specification {
     String key = System.getenv('TOMB_KEY')
     String secret = System.getenv('TOMB_SECRET')
     String bucket = System.getenv('TOMB_BUCKET')
-    LocalFilesystem fs = Tomb.getAmazonS3Filesystem(key, secret, bucket, tmpPath)
+    AmazonS3Filesystem fs = Tomb.getAmazonS3Filesystem(key, secret, bucket, tmpPath)
 
     String getRandomUUID() {
         return UUID.randomUUID().toString().replaceAll('-', '')
@@ -26,17 +29,17 @@ class AmazonS3FilesystemSpec extends Specification {
             def result = fs.resolve(relativePath)
 
         then: 'the result should be the expected'
-            result.toString() == "${tmpPath}/${relativePath}"
+            result.toString() == (tmpPath.toString() ? "${tmpPath}/${relativePath}" : "${relativePath}")
     }
 
     @Requires(S3Configured)
     void 'Check if a file exists'() {
         given: 'A relative path'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
-            def relativePath = tmpFile.toPath()
+            def relativePath = Paths.get(tmpFile.name)
 
-        and: 'being sure that it exists'
-            assert tmpFile.exists()
+        and: 'uploaded to the remote filesystem'
+            fs.put(tmpFile.newInputStream(), relativePath)
 
         when: 'checking if it exists'
             def result = fs.exists(relativePath)
@@ -46,15 +49,13 @@ class AmazonS3FilesystemSpec extends Specification {
 
         cleanup: 'delete the generated resources'
             tmpFile.delete()
+            fs.delete(relativePath)
     }
 
     @Requires(S3Configured)
     void "Check that a file doesn't exist"() {
         given: 'A relative path'
-            def relativePath = Paths.get("/${randomUUID}")
-
-        and: "being sure that it doesn't exists"
-            assert !relativePath.toFile().exists()
+            def relativePath = Paths.get("${randomUUID}")
 
         when: 'checking if it exists'
             def result = fs.exists(relativePath)
@@ -66,58 +67,37 @@ class AmazonS3FilesystemSpec extends Specification {
     @Requires(S3Configured)
     void 'Obtaining a file'() {
         given: 'A filename'
-            def filename = randomUUID
+            def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+            def relativePath = Paths.get(tmpFile.name)
 
-        and: 'a file in the filesystem'
-            def filePath = Paths.get("${fs.basePath}/${filename}")
-            def f = filePath.toFile()
-            f.text = 'holamundo'
-
-        and: 'that exists'
-            assert f.exists()
+        and: 'uploaded to the remote filesystem'
+            fs.put(tmpFile.newInputStream(), relativePath)
 
         when: 'obtaining the file'
-            def result = fs.get(filePath)
+            def result = fs.get(relativePath)
 
         then: 'the contents of the file should be equivalent to the result'
-            result.text == f.text
+            result.text == tmpFile.text
 
         cleanup: 'delete the generated resources'
-            f.delete()
+            tmpFile.delete()
+            fs.delete(relativePath)
     }
 
     @Requires(S3Configured)
     void "Obtaining a file that doesn't exist"() {
-        given: 'A file in the filesystem'
-            def f = File.createTempFile('tomb_', '_tmp')
+        given: 'A path in the filesystem'
+            def relativePath = Paths.get("${randomUUID}")
 
         and: "that doesn't exist"
-            f.delete()
-            assert !f.exists()
+            assert !fs.exists(relativePath)
 
         when: 'obtaining the file'
-            fs.get(f.toPath())
+            fs.get(relativePath)
 
         then: 'an exception should be thrown'
             thrown FilesystemException
-    }
-
-    @Requires(S3Configured)
-    void 'Obtaining a directory'() {
-        given: 'A directory filesystem'
-            def f = File.createTempDir('tomb_', '_tmp')
-
-        and: 'that exist'
-            assert f.exists()
-
-        when: 'obtaining the file'
-            fs.get(f.toPath())
-
-        then: 'an exception should be thrown'
-            thrown FilesystemException
-
-        cleanup: 'delete the generated resources'
-            f.delete()
     }
 
     @Requires(S3Configured)
@@ -133,36 +113,51 @@ class AmazonS3FilesystemSpec extends Specification {
             fs.put(f.newInputStream(), relativePath)
 
         then: 'the file should be correctly uploaded'
-            new File("${tmpPath}/${relativePath}").text == 'holamundo'
+            fs.get(relativePath).text == 'holamundo'
 
         cleanup: 'deleting the temporal resources created in the filesystem'
-            [new File("${tmpPath}/${relativePath}"), f]*.delete()
+            f.delete()
+            fs.delete(relativePath)
     }
 
     @Requires(S3Configured)
     void "Listing a remote filesystem's directory"() {
-        given: 'A temporal directory'
-            def tmpDir = File.createTempDir('tomb_', '_tmp')
+        given: 'A temporal directory with two temporal files in it'
+            def dirPath = Paths.get(getRandomUUID())
+            def file1 = File.createTempFile('tomb_', '_tmp')
+            file1.text = 'holamundo'
+            def file2 = File.createTempFile('tomb_', '_tmp')
+            file2.text = 'holamundo'
 
-        and: 'two temporal files in it'
-            new File(tmpDir, 'file1').createNewFile()
-            new File(tmpDir, 'file2').createNewFile()
+        and: 'uploaded to the filesystem'
+            [file1,file2].each { file ->
+                fs.put(file.newInputStream(), dirPath.resolve(file.name))
+            }
 
         when: 'listing the temporal directory contents'
-            def result = fs.list(Paths.get(tmpDir.name))
+            def result = fs.list(dirPath)
 
         then: 'the result should contain our two files'
             result.size() == 2
-            result.every { it.startsWith('file') }
+            result.every { it.startsWith('tomb_') }
 
         cleanup: 'deleting the temporal resources created in the filesystem'
-            tmpDir.delete()
+            [file1,file2].each { file ->
+                fs.delete(Paths.get(file.name))
+                file.delete()
+            }
     }
 
+    // TODO from here to bottom
     @Requires(S3Configured)
     void "Listing a remote filesystem's file"() {
         given: 'A temporal file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+
+        and: 'uploaded to the remote filesystem'
+            def relativePath = Paths.get(tmpFile.name)
+            fs.put(tmpFile.newInputStream(), relativePath)
 
         when: 'listing the temporal file contents'
             def result = fs.list(Paths.get(tmpFile.name))

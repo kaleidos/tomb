@@ -144,6 +144,7 @@ class LocalFilesystemSpec extends Specification {
 
         then: 'the result should contain our two files'
             result.size() == 2
+            println result
             result.every { it.startsWith('file') }
 
         cleanup: 'deleting the temporal resources created in the filesystem'
