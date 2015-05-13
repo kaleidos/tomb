@@ -8,11 +8,12 @@ import com.amazonaws.services.s3.AmazonS3Client
 import tomb.utils.AmazonS3Utils
 import tomb.filesystem.LocalFilesystem
 import tomb.filesystem.AmazonS3Filesystem
+import tomb.filesystem.FilesystemProvider
 import tomb.exception.FilesystemException
 
 class Tomb {
 
-    static LocalFilesystem getLocalFilesystem(Path basePath = Paths.get('/')) {
+    static FilesystemProvider getLocalFilesystem(Path basePath = Paths.get('/')) {
         File basePathFile = basePath.toFile()
         if (!basePathFile.exists()) {
             throw new FilesystemException("Path ${basePath} doesn't exist")
@@ -28,7 +29,7 @@ class Tomb {
         return fs
     }
 
-    static AmazonS3Filesystem getAmazonS3Filesystem(String key, String secret, String bucket, Path basePath = Paths.get('')) {
+    static FilesystemProvider getAmazonS3Filesystem(String key, String secret, String bucket, Path basePath = Paths.get('')) {
         AmazonS3Client s3Client = AmazonS3Utils.getClient(key, secret)
         AmazonS3Utils.checkBucket(s3Client, bucket)
 
