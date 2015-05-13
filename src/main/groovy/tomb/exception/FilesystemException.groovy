@@ -1,4 +1,4 @@
-package tomb
+package tomb.exception
 
 class FilesystemException extends RuntimeException {
 

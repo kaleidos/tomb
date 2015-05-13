@@ -1,31 +1,17 @@
-package tomb
+package tomb.filesystem
 
 import java.nio.file.Path
 import java.nio.file.Paths
 
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.AmazonS3Exception
-import com.amazonaws.auth.BasicAWSCredentials
+
+import tomb.exception.FilesystemException
 
 class AmazonS3Filesystem implements FilesystemProvider {
 
     String bucket
-    AmazonS3 s3Client
+    AmazonS3Client s3Client
     Path basePath
-
-    AmazonS3Client getAmazonS3Client(String key, String secret) {
-        return new AmazonS3Client([key, secret] as BasicAWSCredentials)
-    }
-
-    AmazonS3Filesystem(String key, String secret, String bucket, Path basePath) {
-        this.s3Client = this.getAmazonS3Client(key, secret)
-        if (!s3Client.doesBucketExist(bucket)) {
-            throw new FilesystemException("The bucket ${bucket} doesn't exist")
-        }
-        this.bucket = bucket
-        this.basePath = (basePath == basePath.root) ? Paths.get('') : basePath
-    }
 
     private File getTemporalFile() {
         return File.createTempFile(this.bucket, '_tmp')

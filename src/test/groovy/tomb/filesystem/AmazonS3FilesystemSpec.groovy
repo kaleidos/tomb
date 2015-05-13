@@ -1,18 +1,23 @@
-package tomb
+package tomb.filesystem
 
 import spock.lang.*
 import java.nio.file.Path
 import java.nio.file.Paths
+import tomb.test.S3Configured
 
-class LocalFilesystemMethodsSpec extends Specification {
+class AmazonS3FilesystemSpec extends Specification {
 
-    Path tmpPath = Paths.get(System.getProperty('java.io.tmpdir'))
-    LocalFilesystem fs = new LocalFilesystem(tmpPath)
+    Path tmpPath = Paths.get('')
+    String key = System.getenv('TOMB_KEY')
+    String secret = System.getenv('TOMB_SECRET')
+    String bucket = System.getenv('TOMB_BUCKET')
+    LocalFilesystem fs = Tomb.getAmazonS3Filesystem(key, secret, bucket, tmpPath)
 
     String getRandomUUID() {
         return UUID.randomUUID().toString().replaceAll('-', '')
     }
 
+    @Requires(S3Configured)
     void 'Resolving a relative path'() {
         given: 'A relative path'
             def relativePath = Paths.get('images/relative/logo.png')
@@ -24,6 +29,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             result.toString() == "${tmpPath}/${relativePath}"
     }
 
+    @Requires(S3Configured)
     void 'Check if a file exists'() {
         given: 'A relative path'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -42,6 +48,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpFile.delete()
     }
 
+    @Requires(S3Configured)
     void "Check that a file doesn't exist"() {
         given: 'A relative path'
             def relativePath = Paths.get("/${randomUUID}")
@@ -56,6 +63,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             !result
     }
 
+    @Requires(S3Configured)
     void 'Obtaining a file'() {
         given: 'A filename'
             def filename = randomUUID
@@ -78,6 +86,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             f.delete()
     }
 
+    @Requires(S3Configured)
     void "Obtaining a file that doesn't exist"() {
         given: 'A file in the filesystem'
             def f = File.createTempFile('tomb_', '_tmp')
@@ -93,6 +102,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void 'Obtaining a directory'() {
         given: 'A directory filesystem'
             def f = File.createTempDir('tomb_', '_tmp')
@@ -110,6 +120,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             f.delete()
     }
 
+    @Requires(S3Configured)
     void 'Uploading a file'() {
         given: 'A file'
             def f = File.createTempFile('tomb_', '_tmp')
@@ -128,6 +139,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             [new File("${tmpPath}/${relativePath}"), f]*.delete()
     }
 
+    @Requires(S3Configured)
     void "Listing a remote filesystem's directory"() {
         given: 'A temporal directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')
@@ -147,6 +159,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpDir.delete()
     }
 
+    @Requires(S3Configured)
     void "Listing a remote filesystem's file"() {
         given: 'A temporal file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -158,6 +171,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Listing a remote filesystem's directory that doesn't exist"() {
         given: 'A temporal directory path'
             def tmpDirPath = Paths.get(randomUUID)
@@ -172,6 +186,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Copying a remote filesystem's file"() {
         given: 'A temporal file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -194,6 +209,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             [tmpFile, destinationPath.toFile()]*.delete()
     }
 
+    @Requires(S3Configured)
     void "Copying a remote filesystem's file that doesn't exist"() {
         given: "A file path that doesn't exist"
             def path = Paths.get(randomUUID)
@@ -206,6 +222,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Copying a remote filesystem's directory"() {
         given: 'A temporal directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')
@@ -220,6 +237,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpDir.delete()
     }
 
+    @Requires(S3Configured)
     void "Copying a remote filesystem's file to a destination that already exists"() {
         given: 'A temporal origin file'
             def tmpOriginFile = File.createTempFile('tomb_', '_tmp')
@@ -239,6 +257,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             [tmpOriginFile, tmpDestinationFile]*.delete()
     }
 
+    @Requires(S3Configured)
     void "Moving a remote filesystem's file"() {
         given: 'A temporal file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -263,6 +282,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             destinationPath.toFile().delete()
     }
 
+    @Requires(S3Configured)
     void "Moving a remote filesystem's file that doesn't exist"() {
         given: "A file path that doesn't exist"
             def path = Paths.get(randomUUID)
@@ -275,6 +295,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Moving a remote filesystem's directory"() {
         given: 'A temporal directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')
@@ -289,6 +310,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpDir.delete()
     }
 
+    @Requires(S3Configured)
     void "Moving a remote filesystem's file to a destination that already exists"() {
         given: 'A temporal origin file'
             def tmpOriginFile = File.createTempFile('tomb_', '_tmp')
@@ -308,6 +330,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             [tmpOriginFile, tmpDestinationFile]*.delete()
     }
 
+    @Requires(S3Configured)
     void "Deleting a file"() {
         given: 'A file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -321,6 +344,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             !tmpFile.exists()
     }
 
+    @Requires(S3Configured)
     void "Deleting a nonexistent"() {
         given: 'A path to a file'
             def tmpFilePath = Paths.get(randomUUID)
@@ -335,6 +359,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Deleting a directory"() {
         given: 'A directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')
@@ -352,6 +377,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             tmpDir.delete()
     }
 
+    @Requires(S3Configured)
     void "Obtaining the URI of a file"() {
         given: 'A file'
             def tmpFile = File.createTempFile('tomb_', '_tmp')
@@ -365,6 +391,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             result.toString() == "file:${tmpFile}"
     }
 
+    @Requires(S3Configured)
     void "Obtaining the URI of a nonexistent file"() {
         given: 'A path to a file'
             def tmpFilePath = Paths.get(randomUUID)
@@ -379,6 +406,7 @@ class LocalFilesystemMethodsSpec extends Specification {
             thrown FilesystemException
     }
 
+    @Requires(S3Configured)
     void "Obtaining the URI of a directory"() {
         given: 'A directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')
