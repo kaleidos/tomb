@@ -32,6 +32,8 @@ fs.put(myfile.newInputStream(), Paths.get('wallpaper.png'))
 // => uploads the file to 'images/wallpaper.png'
 ----
 
+== Supported Filesystems
+
 The different filesystems that `Tomb` supports from scratch are:
 
 |====
@@ -53,7 +55,7 @@ The different filesystems that `Tomb` supports from scratch are:
 |====
 
 
-== FilesystemProvider
+== FilesystemProvider interface
 
 `FilesystemProvider` is the interface that all the backends implement. It has the following methods:
 
