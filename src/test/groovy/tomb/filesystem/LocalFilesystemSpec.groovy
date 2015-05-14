@@ -1,13 +1,16 @@
-package tomb
+package tomb.filesystem
 
 import spock.lang.*
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class LocalFilesystemMethodsSpec extends Specification {
+import tomb.Tomb
+import tomb.exception.FilesystemException
+
+class LocalFilesystemSpec extends Specification {
 
     Path tmpPath = Paths.get(System.getProperty('java.io.tmpdir'))
-    LocalFilesystem fs = new LocalFilesystem(tmpPath)
+    LocalFilesystem fs = Tomb.getLocalFilesystem(tmpPath)
 
     String getRandomUUID() {
         return UUID.randomUUID().toString().replaceAll('-', '')
@@ -141,6 +144,7 @@ class LocalFilesystemMethodsSpec extends Specification {
 
         then: 'the result should contain our two files'
             result.size() == 2
+            println result
             result.every { it.startsWith('file') }
 
         cleanup: 'deleting the temporal resources created in the filesystem'

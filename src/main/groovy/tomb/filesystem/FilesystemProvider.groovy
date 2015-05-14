@@ -1,4 +1,4 @@
-package tomb
+package tomb.filesystem
 
 import java.nio.file.Path
 

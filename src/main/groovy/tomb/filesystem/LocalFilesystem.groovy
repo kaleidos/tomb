@@ -1,24 +1,13 @@
-package tomb
+package tomb.filesystem
 
 import java.nio.file.Path
 import java.nio.file.Paths
 
+import tomb.exception.FilesystemException
+
 class LocalFilesystem implements FilesystemProvider {
 
     Path basePath
-
-    LocalFilesystem(Path basePath) {
-        File basePathFile = basePath.toFile()
-        if (!basePathFile.exists()) {
-            throw new FilesystemException("Path ${basePath} doesn't exist")
-        }
-
-        if (!basePathFile.isDirectory()) {
-            throw new FilesystemException("Path ${basePath} is not a directory")
-        }
-
-        this.basePath = basePath
-    }
 
     Path resolve(Path relativePath) {
         return basePath.resolve(relativePath)
