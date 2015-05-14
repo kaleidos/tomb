@@ -508,6 +508,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a></li>
+<li><a href="#_usage">Usage</a></li>
 <li><a href="#_filesystemprovider">FilesystemProvider</a></li>
 </ul>
 </div>
@@ -517,10 +518,34 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Tomb is a <code>groovy</code> library to use various filesystems in a quick an easy way. Tomb provides you with a generic abstraction to manipulate files in a filesystem and several backends to use it against.</p>
+<p>Tomb is a <code>groovy</code> library to use various filesystems in a quick an easy way. Tomb provides you with a generic abstraction based on the use of the <code>java.nio.file.Path</code> class to manipulate files in a filesystem and several backends to use it against.</p>
 </div>
 <div class="paragraph">
 <p>Right now, Tomb implements two backends, <code>LocalFilesystem</code> and <code>AmazonS3Filesystem</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static methods of the class <code>Tomb</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// Local Filesystem</span>
+<span class="keyword">def</span> fs = Tomb.getLocalFilesystem(Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">/tmp</span><span class="delimiter">'</span></span>))
+
+fs.list()
+<span class="comment">// =&gt; lists all files on '/tmp'</span>
+
+<span class="comment">// Amazon Filesystem</span>
+<span class="keyword">def</span> fs = Tomb.getAmazonS3Filesystem(<span class="string"><span class="delimiter">'</span><span class="content">key</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">secret</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">bucket</span><span class="delimiter">'</span></span>, Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">images</span><span class="delimiter">'</span></span>))
+
+<span class="keyword">def</span> myfile = <span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="string"><span class="delimiter">'</span><span class="content">/tmp/wallpaper.png</span><span class="delimiter">'</span></span>)
+fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">wallpaper.png</span><span class="delimiter">'</span></span>))
+<span class="comment">// =&gt; uploads the file to 'images/wallpaper.png'</span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -610,7 +635,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-11 13:45:32 CEST
+Last updated 2015-05-14 09:46:28 CEST
 </div>
 </div>
 </body>
