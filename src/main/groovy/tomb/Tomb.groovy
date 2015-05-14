@@ -13,6 +13,26 @@ import tomb.exception.FilesystemException
 
 class Tomb {
 
+    private static userValueOrDefault(def userValue, def defaultValue) {
+        userValue != null ? userValue : defaultValue
+    }
+
+    /**
+     * Returns the provider defined at config dictionary.
+     * @param config Configuration for the filesystem. It has the filesystem
+     *               type and the filesystem configuration. This configuration
+     *               depends on the underliying filesystem.
+     * @return The instance to the filesystem.
+     */
+    static FilesystemProvider getFilesystem(def config) {
+        if (config.filesystem == 'S3')
+            return getAmazonS3Filesystem(config.key, config.secret, config.bucket, Paths.get(userValueOrDefault(config.basePath, '')))
+        else if (config.filesystem == 'local')
+            return getLocalFilesystem(Paths.get(userValueOrDefault(config.basePath, '/')))
+        else
+            throw new FilesystemException("Unknown filesystem ${config.filesystem}");
+    }
+
     static FilesystemProvider getLocalFilesystem(Path basePath = Paths.get('/')) {
         File basePathFile = basePath.toFile()
         if (!basePathFile.exists()) {
