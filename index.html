@@ -529,24 +529,60 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="_usage">Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static methods of the class <code>Tomb</code>:</p>
+<p>Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static method <code>getFilesystem</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// Local Filesystem</span>
-<span class="keyword">def</span> fs = Tomb.getLocalFilesystem(Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">/tmp</span><span class="delimiter">'</span></span>))
+<span class="keyword">def</span> fs = Tomb.getFilesystem(<span class="string"><span class="delimiter">'</span><span class="content">local</span><span class="delimiter">'</span></span>, <span class="key">basePath</span>: <span class="string"><span class="delimiter">'</span><span class="content">/tmp</span><span class="delimiter">'</span></span>)
 
 fs.list()
 <span class="comment">// =&gt; lists all files on '/tmp'</span>
 
 <span class="comment">// Amazon Filesystem</span>
-<span class="keyword">def</span> fs = Tomb.getAmazonS3Filesystem(<span class="string"><span class="delimiter">'</span><span class="content">key</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">secret</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">bucket</span><span class="delimiter">'</span></span>, Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">images</span><span class="delimiter">'</span></span>))
+<span class="keyword">def</span> fs = Tomb.getFilesystem(<span class="string"><span class="delimiter">'</span><span class="content">S3</span><span class="delimiter">'</span></span>,
+             <span class="key">key</span>: <span class="string"><span class="delimiter">'</span><span class="content">key</span><span class="delimiter">'</span></span>,
+             <span class="key">secret</span>: <span class="string"><span class="delimiter">'</span><span class="content">secret</span><span class="delimiter">'</span></span>,
+             <span class="key">bucket</span>: <span class="string"><span class="delimiter">'</span><span class="content">bucket</span><span class="delimiter">'</span></span>,
+             <span class="key">basePath</span>: <span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span>)
 
 <span class="keyword">def</span> myfile = <span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="string"><span class="delimiter">'</span><span class="content">/tmp/wallpaper.png</span><span class="delimiter">'</span></span>)
 fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="delimiter">'</span><span class="content">wallpaper.png</span><span class="delimiter">'</span></span>))
 <span class="comment">// =&gt; uploads the file to 'images/wallpaper.png'</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The different filesystems that <code>Tomb</code> supports from scratch are:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Filesystem parameter</th>
+<th class="tableblock halign-left valign-top">Configuration Map</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>'local'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>basePath</code>: The base path for all the operations of the filesystem</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AmazonS3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>'S3'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>key</code>: The Amazon api key
+</p><p class="tableblock"><code>secret</code>: The Amazon api secret
+</p><p class="tableblock"><code>bucket</code>: The Amazon S3 bucket name
+</p><p class="tableblock"><code>basePath</code>: The base path for all the operations of the filesystem</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect1">
@@ -641,7 +677,7 @@ fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="deli
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-14 14:35:02 CEST
+Last updated 2015-05-14 23:53:40 CEST
 </div>
 </div>
 </body>
