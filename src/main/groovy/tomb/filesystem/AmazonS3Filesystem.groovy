@@ -57,9 +57,6 @@ class AmazonS3Filesystem implements FilesystemProvider {
 
     List<String> list(Path relativePath = Paths.get('')) {
         Path path = resolve(relativePath)
-        if (!this.exists(relativePath)) {
-            throw new FilesystemException("The path ${path} does not exist")
-        }
 
         List<String> list = s3Client.listObjects(this.bucket, path.toString()).objectSummaries.collect { it.key }
 
@@ -76,6 +73,11 @@ class AmazonS3Filesystem implements FilesystemProvider {
     void copy(Path initialRelativePath, Path destinationRelativePath) {
         Path initialPath = resolve(initialRelativePath)
         Path destinationPath = resolve(destinationRelativePath)
+
+        if (this.exists(destinationRelativePath)) {
+            throw new FilesystemException("The destination path ${destinationPath} already exists")
+        }
+
         try {
             s3Client.copyObject(this.bucket, initialPath.toString(), this.bucket, destinationPath.toString())
         } catch (Exception e) {
@@ -83,7 +85,14 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    void move(Path initialPath, Path destinationPath) {
+    void move(Path initialRelativePath, Path destinationRelativePath) {
+        Path initialPath = resolve(initialRelativePath)
+        Path destinationPath = resolve(destinationRelativePath)
+
+        if (this.exists(destinationRelativePath)) {
+            throw new FilesystemException("The destination path ${destinationPath} already exists")
+        }
+
         try {
             s3Client.copyObject(this.bucket, initialPath.toString(), this.bucket, destinationPath.toString())
             this.delete(initialPath)
@@ -92,7 +101,13 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    void delete(Path path) {
+    void delete(Path relativePath) {
+        Path path = resolve(relativePath)
+
+        if (!this.exists(relativePath)) {
+            throw new FilesystemException("The path ${path} doesn't exist")
+        }
+
         try {
             s3Client.deleteObject(this.bucket, path.toString())
         } catch (Exception e) {
@@ -100,7 +115,13 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    URI getUri(Path path) {
+    URI getUri(Path relativePath) {
+        Path path = resolve(relativePath)
+
+        if (!this.exists(relativePath)) {
+            throw new FilesystemException("The path ${path} doesn't exist")
+        }
+
         try {
             return s3Client.getUrl(this.bucket, path.toString()).toURI()
         } catch (Exception e) {
