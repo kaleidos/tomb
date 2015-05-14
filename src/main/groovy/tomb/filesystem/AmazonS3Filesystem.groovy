@@ -55,8 +55,8 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
-    List<String> list(Path relativePath = Paths.get('')) {
-        Path path = resolve(relativePath)
+    List<String> list(Path relativePath = null) {
+        Path path = resolve(relativePath ?: Paths.get(''))
 
         List<String> list = s3Client.listObjects(this.bucket, path.toString()).objectSummaries.collect { it.key }
 

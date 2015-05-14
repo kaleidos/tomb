@@ -10,6 +10,11 @@ class LocalFilesystem implements FilesystemProvider {
     Path basePath
 
     Path resolve(Path relativePath) {
+        println '=============================='
+        println "BasePath: ${this.basePath}"
+        println "RelativePath: ${relativePath}"
+        println "RESOLVED " + basePath.resolve(relativePath)
+        println '=============================='
         return basePath.resolve(relativePath)
     }
 
@@ -45,8 +50,8 @@ class LocalFilesystem implements FilesystemProvider {
         }
     }
 
-    List<String> list(Path relativePath = Paths.get('')) {
-        Path path = resolve(relativePath)
+    List<String> list(Path relativePath = null) {
+        Path path = resolve(relativePath ?: Paths.get(''))
         File file = path.toFile()
 
         if (!file.exists()) {
