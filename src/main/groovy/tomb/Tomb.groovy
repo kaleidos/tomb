@@ -44,21 +44,21 @@ class Tomb {
         }
 
         LocalFilesystem fs = new LocalFilesystem()
-            fs.basePath = basePath
+        fs.basePath = basePath
 
-            return fs
+        return fs
     }
 
     static FilesystemProvider getAmazonS3Filesystem(String key, String secret, String bucket, Path basePath = Paths.get('')) {
         AmazonS3Client s3Client = AmazonS3Utils.getClient(key, secret)
-            AmazonS3Utils.checkBucket(s3Client, bucket)
+        AmazonS3Utils.checkBucket(s3Client, bucket)
 
-            AmazonS3Filesystem fs = new AmazonS3Filesystem()
-            fs.basePath = basePath
-            fs.s3Client = s3Client
-            fs.bucket = bucket
+        AmazonS3Filesystem fs = new AmazonS3Filesystem()
+        fs.basePath = basePath
+        fs.s3Client = s3Client
+        fs.bucket = bucket
 
-            return fs
+        return fs
     }
 
 }
