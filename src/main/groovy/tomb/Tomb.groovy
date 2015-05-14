@@ -35,9 +35,9 @@ class Tomb {
 
     static FilesystemProvider getLocalFilesystem(Path basePath = Paths.get('/')) {
         File basePathFile = basePath.toFile()
-            if (!basePathFile.exists()) {
-                throw new FilesystemException("Path ${basePath} doesn't exist")
-            }
+        if (!basePathFile.exists()) {
+            throw new FilesystemException("Path ${basePath} doesn't exist")
+        }
 
         if (!basePathFile.isDirectory()) {
             throw new FilesystemException("Path ${basePath} is not a directory")
