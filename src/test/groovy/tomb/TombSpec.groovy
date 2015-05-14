@@ -10,6 +10,45 @@ import tomb.utils.AmazonS3Utils
 
 class TombSpec extends Specification {
 
+	void 'Obtain a LocalFilesystem with abstrat getter'() {
+        given: 'A base path'
+            def basePath = '/'
+
+        when: 'getting the LocalFilesystem'
+            def result = Tomb.getFilesystem('local', basePath: basePath)
+
+        then: 'everything should be ok'
+            notThrown RuntimeException
+
+        and: 'the fs path should be correct'
+            result.basePath == Paths.get(basePath)
+	}
+
+	@Requires(S3Configured)
+	void 'Obtain a AmazonS3Filesystem with abstrat getter'() {
+        given: 'A base path'
+            def basePath = ''
+            def key = System.getenv('TOMB_KEY')
+            def secret = System.getenv('TOMB_SECRET')
+            def bucket = System.getenv('TOMB_BUCKET')
+
+        when: 'getting the LocalFilesystem'
+            def result = Tomb.getFilesystem('S3',
+                         key: key,
+                         secret: secret,
+                         bucket: bucket,
+                         basePath: basePath
+                     )
+
+        then: 'everything should be ok'
+            notThrown RuntimeException
+
+        and: 'the fs path should be correct'
+            result.basePath == Paths.get(basePath)
+            result.bucket == bucket
+            result.s3Client
+	}
+
     void 'Obtain a LocalFilesystem'() {
         given: 'A base path'
             def basePath = Paths.get('/')
@@ -68,40 +107,5 @@ class TombSpec extends Specification {
             result.bucket == bucket
             result.s3Client
     }
-
-	void 'Obtain a LocalFilesystem with abstrat getter'() {
-        given: 'A base path'
-            def basePath = '/'
-
-        when: 'getting the LocalFilesystem'
-            def fs = Tomb.getFilesystem filesystem: 'local', basePath: basePath
-
-        then: 'everything should be ok'
-            notThrown RuntimeException
-
-        and: 'the fs path should be correct'
-            fs.basePath == Paths.get(basePath)
-
-	}
-
-	@Requires(S3Configured)
-	void 'Obtain a AmazonS3Filesystem with abstrat getter'() {
-        given: 'A base path'
-            def basePath = ''
-            def key = System.getenv('TOMB_KEY')
-            def secret = System.getenv('TOMB_SECRET')
-            def bucket = System.getenv('TOMB_BUCKET')
-
-        when: 'getting the LocalFilesystem'
-            def fs = Tomb.getFilesystem filesystem: 'S3', key: key, secret: secret, bucket: bucket, basePath: basePath
-
-        then: 'everything should be ok'
-            notThrown RuntimeException
-
-        and: 'the fs path should be correct'
-            result.basePath == Paths.get(basePath)
-            result.bucket == bucket
-            result.s3Client
-	}
 
 }
