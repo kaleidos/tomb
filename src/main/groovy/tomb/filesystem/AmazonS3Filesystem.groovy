@@ -57,6 +57,10 @@ class AmazonS3Filesystem implements FilesystemProvider {
 
     List<String> list(Path relativePath = Paths.get('')) {
         Path path = resolve(relativePath)
+        if (!this.exists(relativePath)) {
+            throw new FilesystemException("The path ${path} does not exist")
+        }
+
         List<String> list = s3Client.listObjects(this.bucket, path.toString()).objectSummaries.collect { it.key }
 
         if (path.toString()) {
