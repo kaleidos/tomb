@@ -50,6 +50,11 @@ fs.put(myfile.newInputStream(), Paths.get('wallpaper.png'))
 |http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
 |Returns an https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] with the contents of the file
 
+|lastModified
+|https://docs.oracle.com/javase/8/docs/api/java/sql/Date.html[Date]
+|http://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html[Path] relativePath
+|Returns the last https://docs.oracle.com/javase/8/docs/api/java/sql/Date.html[Date] on which the file was modified
+
 |put
 |void
 |https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html[InputStream] inputStream

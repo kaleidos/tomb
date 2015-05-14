@@ -10,11 +10,6 @@ class LocalFilesystem implements FilesystemProvider {
     Path basePath
 
     Path resolve(Path relativePath) {
-        println '=============================='
-        println "BasePath: ${this.basePath}"
-        println "RelativePath: ${relativePath}"
-        println "RESOLVED " + basePath.resolve(relativePath)
-        println '=============================='
         return basePath.resolve(relativePath)
     }
 
@@ -37,6 +32,21 @@ class LocalFilesystem implements FilesystemProvider {
         }
 
         return file.newInputStream()
+    }
+
+    Date lastModified(Path relativePath) {
+        Path path = resolve(relativePath)
+        File file = path.toFile()
+
+        if (!file.exists()) {
+            throw new FilesystemException("File ${path} doesn't exist")
+        }
+
+        if (!file.isFile()) {
+            throw new FilesystemException("Path ${path} is not a file")
+        }
+
+        return new Date(file.lastModified())
     }
 
     void put(InputStream inputStream, Path relativePath) {
