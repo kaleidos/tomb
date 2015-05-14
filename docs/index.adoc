@@ -10,23 +10,48 @@ Right now, Tomb implements two backends, `LocalFilesystem` and `AmazonS3Filesyst
 
 == Usage
 
-Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static methods of the class `Tomb`:
+Each backend implement a list of methods described in the next section. To obtain a new backend for a Filesystem, we use the static method `getFilesystem`:
 
 [source, groovy]
 ----
 // Local Filesystem
-def fs = Tomb.getLocalFilesystem(Paths.get('/tmp'))
+def fs = Tomb.getFilesystem('local', basePath: '/tmp')
 
 fs.list()
 // => lists all files on '/tmp'
 
 // Amazon Filesystem
-def fs = Tomb.getAmazonS3Filesystem('key', 'secret', 'bucket', Paths.get('images'))
+def fs = Tomb.getFilesystem('S3',
+             key: 'key',
+             secret: 'secret',
+             bucket: 'bucket',
+             basePath: '')
 
 def myfile = new File('/tmp/wallpaper.png')
 fs.put(myfile.newInputStream(), Paths.get('wallpaper.png'))
 // => uploads the file to 'images/wallpaper.png'
 ----
+
+The different filesystems that `Tomb` supports from scratch are:
+
+|====
+|Name |Filesystem parameter |Configuration Map
+
+|Local
+|`'local'`
+|`basePath`: The base path for all the operations of the filesystem
+
+|AmazonS3
+|`'S3'`
+|`key`: The Amazon api key
+
+`secret`: The Amazon api secret
+
+`bucket`: The Amazon S3 bucket name
+
+`basePath`: The base path for all the operations of the filesystem
+|====
+
 
 == FilesystemProvider
 
