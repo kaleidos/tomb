@@ -509,7 +509,8 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a></li>
 <li><a href="#_usage">Usage</a></li>
-<li><a href="#_filesystemprovider">FilesystemProvider</a></li>
+<li><a href="#_supported_filesystems">Supported Filesystems</a></li>
+<li><a href="#_filesystemprovider_interface">FilesystemProvider interface</a></li>
 </ul>
 </div>
 </div>
@@ -551,6 +552,11 @@ fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="deli
 <span class="comment">// =&gt; uploads the file to 'images/wallpaper.png'</span></code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_supported_filesystems">Supported Filesystems</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The different filesystems that <code>Tomb</code> supports from scratch are:</p>
 </div>
@@ -586,7 +592,7 @@ fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="deli
 </div>
 </div>
 <div class="sect1">
-<h2 id="_filesystemprovider">FilesystemProvider</h2>
+<h2 id="_filesystemprovider_interface">FilesystemProvider interface</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><code>FilesystemProvider</code> is the interface that all the backends implement. It has the following methods:</p>
@@ -677,7 +683,7 @@ fs.put(myfile.newInputStream(), Paths.get(<span class="string"><span class="deli
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-14 23:53:40 CEST
+Last updated 2015-05-15 00:06:17 CEST
 </div>
 </div>
 </body>
