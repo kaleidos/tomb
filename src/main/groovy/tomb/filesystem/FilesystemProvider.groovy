@@ -10,6 +10,8 @@ interface FilesystemProvider {
 
     InputStream get(Path relativePath)
 
+    Date lastModified(Path relativePath)
+
     void put(InputStream inputStream, Path relativePath)
 
     List<String> list(Path relativePath)
