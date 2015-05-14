@@ -10,11 +10,6 @@ class LocalFilesystem implements FilesystemProvider {
     Path basePath
 
     Path resolve(Path relativePath) {
-        println '=============================='
-        println "BasePath: ${this.basePath}"
-        println "RelativePath: ${relativePath}"
-        println "RESOLVED " + basePath.resolve(relativePath)
-        println '=============================='
         return basePath.resolve(relativePath)
     }
 
@@ -38,6 +33,8 @@ class LocalFilesystem implements FilesystemProvider {
 
         return file.newInputStream()
     }
+
+    Date lastModified(Path relativePath) {}
 
     void put(InputStream inputStream, Path relativePath) {
         Path path = resolve(relativePath)
