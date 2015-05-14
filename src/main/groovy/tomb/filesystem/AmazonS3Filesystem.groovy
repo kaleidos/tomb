@@ -42,6 +42,16 @@ class AmazonS3Filesystem implements FilesystemProvider {
         }
     }
 
+    Date lastModified(Path relativePath) {
+        Path path = resolve(relativePath)
+
+        try {
+            return s3Client.getObjectMetadata(this.bucket, path.toString()).lastModified
+        } catch (Exception e) {
+            throw new FilesystemException("The key ${path} does not exist")
+        }
+    }
+
     void put(InputStream inputStream, Path path) {
         File tempFile = this.temporalFile
         tempFile.withOutputStream { it.write(inputStream.bytes) }

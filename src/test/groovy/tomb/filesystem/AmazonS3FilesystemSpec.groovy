@@ -101,6 +101,45 @@ class AmazonS3FilesystemSpec extends Specification {
     }
 
     @Requires(S3Configured)
+    void 'Getting the last modified date of a file'() {
+        given: 'A file'
+            def tmpFile = File.createTempFile('tomb_', '_tmp')
+            tmpFile.text = 'holamundo'
+
+        and: 'uploaded to the remote filesystem'
+            def filePath = Paths.get(tmpFile.name)
+            fs.put(tmpFile.newInputStream(), filePath)
+            assert fs.exists(filePath)
+
+        and: "today's date"
+            def today = new Date()
+
+        when: 'trying to obtain the last modified date'
+            def result = fs.lastModified(filePath)
+
+        then: 'the date obtained should be correct'
+            result.class == java.util.Date
+            result.day == today.day
+            result.month == today.month
+            result.year == today.year
+    }
+
+    @Requires(S3Configured)
+    void 'Getting the last modified date on a nonexistent file'() {
+        given: 'a path'
+            def filePath = Paths.get(randomUUID)
+
+        and: "that doesn't exist in the remote filesystem"
+            assert !fs.exists(filePath)
+
+        when: "trying to get it's last modified date"
+            fs.lastModified(filePath)
+
+        then: 'an exception should be thrown'
+            thrown FilesystemException
+    }
+
+    @Requires(S3Configured)
     void 'Uploading a file'() {
         given: 'A file'
             def f = File.createTempFile('tomb_', '_tmp')
