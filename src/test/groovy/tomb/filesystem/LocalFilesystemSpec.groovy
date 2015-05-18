@@ -167,6 +167,30 @@ class LocalFilesystemSpec extends Specification {
             [new File("${tmpPath}/${relativePath}"), f]*.delete()
     }
 
+    void "Uploading a file to a remote directory that doesn't exists"() {
+        given: 'A file'
+            def f = File.createTempFile('tomb_', '_tmp')
+            f.text = 'holamundo'
+
+        and: 'a remote path'
+            def directoryPath = Paths.get(randomUUID)
+            def filePath = Paths.get(randomUUID)
+            def relativePath = Paths.get("${directoryPath.resolve(filePath)}")
+
+        when: 'uploading it to the filesystem'
+            fs.put(f.newInputStream(), relativePath)
+
+        then: 'the directory should exist'
+            (new File("${tmpPath}/${directoryPath}")).directory
+            (new File("${tmpPath}/${directoryPath}")).exists()
+
+        and: 'the file should be correctly uploaded'
+            new File("${tmpPath}/${relativePath}").text == 'holamundo'
+
+        cleanup: 'deleting the temporal resources created in the filesystem'
+            [new File("${tmpPath}/${relativePath}"), f, new File("${tmpPath.resolve(directoryPath)}")]*.delete()
+    }
+
     void "Listing a remote filesystem's directory"() {
         given: 'A temporal directory'
             def tmpDir = File.createTempDir('tomb_', '_tmp')

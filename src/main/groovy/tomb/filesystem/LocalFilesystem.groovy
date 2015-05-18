@@ -54,6 +54,9 @@ class LocalFilesystem implements FilesystemProvider {
         File file = path.toFile()
 
         try {
+            if (!file.parentFile.exists()) {
+                file.parentFile.mkdirs()
+            }
             file.withOutputStream { it.write(inputStream.bytes) }
         } catch (Exception e) {
             throw new FilesystemException("Unable to write file ${path}")
