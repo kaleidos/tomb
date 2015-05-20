@@ -124,7 +124,8 @@ class LocalFilesystem implements FilesystemProvider {
     }
 
     void delete(Path relativePath) {
-        File file = relativePath.toFile()
+        Path path = resolve(relativePath)
+        File file = path.toFile()
 
         if (!file.exists()) {
             throw new FilesystemException("File ${relativePath} doesn't exist")
